@@ -1,1 +1,13 @@
+# Python
+__pycache__/
+.venv/
+*.pyc
+
+# Dados
+*.csv
+*.csv.gz
 *.parquet
+
+# Terraform
+.terraform/
+*.tfstate*

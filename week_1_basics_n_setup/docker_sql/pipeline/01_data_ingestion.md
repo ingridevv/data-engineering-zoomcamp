@@ -61,3 +61,31 @@ docker run -it \
     --pg-db=ny_taxi \
     --target-table=yellow_taxi_trips
 
+# Reverse Github proxy blocking pgadmin 
+docker rm -f pgadmin
+
+docker run -d \
+  --name pgadmin \
+  --network=pg-network \
+  -p 8085:80 \
+  -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+  -e PGADMIN_DEFAULT_PASSWORD="root" \
+  -e PGADMIN_CONFIG_SERVER_MODE="False" \
+  -e PGADMIN_CONFIG_PROXY_X_HOST_COUNT=1 \
+  -e PGADMIN_CONFIG_PROXY_X_PREFIX_COUNT=1 \
+  --user root \
+  dpage/pgadmin4
+
+# Check all the networks we have
+docker network ls 
+
+# Run the scrip (pipeline-default)
+docker run -it --rm\
+  --network=pipeline_default \
+  taxi_ingest:v001 \
+    --pg-user=root \
+    --pg-pass=root \
+    --pg-host=pgdatabase \
+    --pg-port=5432 \
+    --pg-db=ny_taxi \
+    --target-table=yellow_taxi_trips

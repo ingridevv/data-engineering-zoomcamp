@@ -79,7 +79,7 @@ docker run -d \
 # Check all the networks we have
 docker network ls 
 
-# Run the scrip (pipeline-default)
+## Run the script (pipeline-default)
 docker run -it --rm\
   --network=pipeline_default \
   taxi_ingest:v001 \
@@ -89,3 +89,20 @@ docker run -it --rm\
     --pg-port=5432 \
     --pg-db=ny_taxi \
     --target-table=yellow_taxi_trips
+
+## Run the orchestrated containers
+
+### Start services 
+docker-compose up
+
+### Start services detached mode (freeing up terminal): 
+docker-compose up -d
+
+### Stop services: 
+docker-compose down
+
+### View logs
+docker-compose logs
+
+### Stop and remove volumes
+docker-compose down -v

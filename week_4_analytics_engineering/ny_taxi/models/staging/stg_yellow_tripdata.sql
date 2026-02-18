@@ -1,25 +1,26 @@
-{{ config(materialized="view") }}
-
-with
-    tripdata as (
-        select *, 
-        row_number() over (partition by vendorid, lpep_pickup_datetime order by lpep_pickup_datetime) as rn
-        from {{ source("staging", "GREEN_TRIPDATA") }}
-        where vendorid is not null
+{{
+    config(
+        materialized='view'
     )
+}}
 
-select
-    -- Identifiers
-    {{ dbt_utils.generate_surrogate_key(["vendorid", "lpep_pickup_datetime"]) }}
-    as tripid,
+with tripdata as 
+(
+    select *
+    from {{ source('staging', 'YELLOW_TRIPDATA' ) }}
+    where vendorid is not null
+)
+
+select 
+      -- Identifiers
     cast(vendorid as integer) as vendorid,
     cast(ratecodeid as integer) as ratecodeid,
     cast(pulocationid as integer) as pulocationid,
     cast(dolocationid as integer) as dolocationid,
 
     -- Timestamps
-    cast(lpep_pickup_datetime as timestamp) as lpep_pickup_datetime,
-    cast(lpep_dropoff_datetime as timestamp) as lpep_dropoff_datetime,
+    cast(tpep_pickup_datetime as timestamp) as pickup_datetime,
+    cast(tpep_dropoff_datetime as timestamp) as dropoff_datetime,
 
     -- Trip Info 
     store_and_fwd_flag,
@@ -40,6 +41,4 @@ select
     cast(congestion_surcharge as numeric) as congestion_surcharge,
     {{ get_payment_type_description("payment_type") }} as payment_type_descripted
 from tripdata
-where rn = 1
 
-{% if var(is_test_run, default=true) %} limit 100 {% endif %}

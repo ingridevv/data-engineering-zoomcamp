@@ -14,12 +14,12 @@ select
     as tripid,
     cast(vendorid as integer) as vendorid,
     cast(ratecodeid as integer) as ratecodeid,
-    cast(pulocationid as integer) as pulocationid,
-    cast(dolocationid as integer) as dolocationid,
+    cast(pulocationid as integer) as pickup_locationid,
+    cast(dolocationid as integer) as dropoff_locationid,
 
     -- Timestamps
-    cast(lpep_pickup_datetime as timestamp) as lpep_pickup_datetime,
-    cast(lpep_dropoff_datetime as timestamp) as lpep_dropoff_datetime,
+    cast(lpep_pickup_datetime as timestamp) as pickup_datetime,
+    cast(lpep_dropoff_datetime as timestamp) as dropoff_datetime,
 
     -- Trip Info 
     store_and_fwd_flag,

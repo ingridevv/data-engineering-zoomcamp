@@ -1,0 +1,11 @@
+version: 2
+
+
+sources:
+  - name: staging
+    database: ZOOMCAMP
+    schema: TRIPS
+
+    tables:
+      - name: GREEN_TRIPDATA
+      - name: YELLOW_TRIPDATA

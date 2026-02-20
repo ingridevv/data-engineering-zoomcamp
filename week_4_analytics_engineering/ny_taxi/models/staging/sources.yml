@@ -3,6 +3,7 @@ version: 2
 
 sources:
   - name: staging
+    description: "Raw data from NYC taxi rides"
     database: ZOOMCAMP
     schema: TRIPS
 

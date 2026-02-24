@@ -1,11 +1,15 @@
 {{
     config(
-        materialized='table'
+        materialized='incremental',
+        unique_key='tripid'
     )
 }}
 
 with trips_unioned as (
     select * from {{ ref('int_trips_unioned') }}
+    {% if is_incremental() %}
+        where pickup_datetime > (select max(pickup_datetime) from {{ this }})
+    {% endif %}
 ),
 
 dim_zones as (

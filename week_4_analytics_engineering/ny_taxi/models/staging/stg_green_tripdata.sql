@@ -1,4 +1,9 @@
-{{ config(materialized="view") }}
+{{ 
+    config(
+        materialized="incremental",
+        unique_key="tripid"
+        ) 
+}}
 
 with
     tripdata as (
@@ -8,6 +13,11 @@ with
         ) as rn
         from {{ source("staging", "GREEN_TRIPDATA") }}
         where vendorid is not null
+
+        {% if is_incremental() %}
+        -- Only load data with the greater timestamp processed
+            and lpep_pickup_datetime > (select max(pickup_datetime) from {{ this }})
+        {% endif %}
     )
 
 select

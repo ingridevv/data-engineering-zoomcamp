@@ -1,6 +1,7 @@
 {{
     config(
-        materialized='view'
+        materialized='incremental',
+        unique_key="tripid"
     )
 }}
 
@@ -12,6 +13,9 @@ with tripdata as
         ) as rn
     from {{ source('staging', 'YELLOW_TRIPDATA' ) }}
     where vendorid is not null
+    {% if is_incremental() %}
+        and tpep_pickup_datetime > (select max(pickup_datetime) from {{ this }})
+    {% endif %}
 )
 
 select 

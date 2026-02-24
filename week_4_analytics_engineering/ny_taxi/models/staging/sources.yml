@@ -1,12 +1,24 @@
 version: 2
 
-
 sources:
   - name: staging
-    description: "Raw data from NYC taxi rides"
+    description: "Raw taxi trip data imported directly from the NYC Taxi & Limousine Commission (TLC) datasets hosted in Snowflake."
     database: ZOOMCAMP
     schema: TRIPS
 
     tables:
       - name: GREEN_TRIPDATA
+        description: "Raw records of trips taken in NYC Green Taxis (Boro Taxis). These records include pick-up and drop-off dates/times, locations, distances, itemized fares, and rate types."
+        columns:
+          - name: vendorid
+            description: "Raw ID for the TPEP/LPEP provider."
+          - name: lpep_pickup_datetime
+            description: "Raw timestamp when the meter was engaged."
+
       - name: YELLOW_TRIPDATA
+        description: "Raw records of trips taken in NYC Yellow Taxis. These are the primary taxi records for Manhattan and airport trips."
+        columns:
+          - name: vendorid
+            description: "Raw ID for the TPEP provider."
+          - name: tpep_pickup_datetime
+            description: "Raw timestamp when the meter was engaged."

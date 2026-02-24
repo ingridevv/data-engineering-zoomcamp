@@ -6,14 +6,17 @@
 
 with tripdata as 
 (
-    select *
+    select *,
+    row_number() over (partition by vendorid, tpep_pickup_datetime, pulocationid, fare_amount
+        order by tpep_pickup_datetime
+        ) as rn
     from {{ source('staging', 'YELLOW_TRIPDATA' ) }}
     where vendorid is not null
 )
 
 select 
       -- Identifiers
-    {{ dbt_utils.generate_surrogate_key(["vendorid", "tpep_pickup_datetime"]) }}
+    {{ dbt_utils.generate_surrogate_key(["vendorid", "tpep_pickup_datetime", "pulocationid", "fare_amount"]) }}
     as tripid,
     cast(vendorid as integer) as vendorid,
     cast(ratecodeid as integer) as ratecodeid,
@@ -28,7 +31,7 @@ select
     store_and_fwd_flag,
     cast(passenger_count as integer) as passenger_count,
     cast(trip_distance as numeric) as trip_distance,
-    cast(trip_type as integer) as trip_type,
+    cast(null as integer) as trip_type, -- create as null, since trip_type doesn't exist in yellow dataset
 
     -- Payment Info
     cast(fare_amount as numeric) as fare_amount,
@@ -43,4 +46,5 @@ select
     cast(congestion_surcharge as numeric) as congestion_surcharge,
     {{ get_payment_type_description("payment_type") }} as payment_type_descripted
 from tripdata
+where rn = 1
 

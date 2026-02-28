@@ -8,6 +8,8 @@ __pycache__/
 *.csv.gz
 *.parquet
 temp_data/
+logs/
+*duckdb.db
 
 # Terraform
 .terraform/
@@ -15,3 +17,7 @@ temp_data/
 
 # Credentials
 **/.env
+.bruin.yml
+logs/runs
+logs/*.log
+*.py[cod]
